@@ -23,7 +23,7 @@ function dialogueWindow(id) {
     var dialogue = document.getElementById('dialogue');
     if  (dialogue.style.display == "block")
          dialogue.style.display = "none";
-    else 
+    else
     {
         dialogue.style.display = "block";
         var a_name = document.getElementById('name');
@@ -32,13 +32,13 @@ function dialogueWindow(id) {
 }
 
 function getHTMLBlock(obj) {
-    var string = 
+    var string =
         '<div class="container noselect">' +
             '<div class="title">' +
                 '<a class="name">' +
                     obj.name + 
                 '</a>' +
-                `<a class="jlink" onClick="dialogueWindow(\'${obj.name}\')" style="width: 360px">` +
+                `<a class="jlink" onClick="dialogueWindow(\'${obj._id}\')" style="width: 360px">` +
                 '<span class="b">' +
                     obj.price +
                 'р</span>' +

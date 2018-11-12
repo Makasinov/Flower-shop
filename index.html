@@ -65,25 +65,41 @@
         <!-- There is dynamically added code -->
     </div>
 
-    <div id="dialogue">
+    <form id="dialogue" class="noselect">
         <img src="https://image.flaticon.com/icons/svg/148/148766.svg" alt="" width="40" height="40" align="right"
             hspace="10" vspace="10" onclick="dialogueWindow()" style="cursor: pointer" id="closeIcon">
         
         <div id="form">
-            <a id="name" class="clear name" style="width: 90%"></a><br>
-            <a id="number" class="clear" style="width: 90%">В наличии: 999</a><br>
-            <div class="mrg">
+            <a id="name" class="clear name" style="width: 100%"></a><br>
+            <a id="number" class="clear" style="width: 100%">В наличии: 999</a><br>
+            <div class="clear mrg" style="width: 100%; height: 20%">
                 <a class="clear">Количество:</a> 
-                <input class="clear" style="width: 50px">
-                <a class="clear">x</a> 
-                <a class="clear">9</a>
-                <a class="clear">p=</a>
-                <a class="clear">45</a>
-                <a class="clear">p</a>
+                <input class="clear input" id="inputNumber" maxlength="3" style="width: 70px"><br>
+                <a id="price" class="clear"></a><br>
+                <a id="final_price" class="clear"></a>
+                <a class="clear full">#р</a>
             </div>
+            <div class="clear mrg" style="width: 100%; height: 40%">
+                
+                <div style="width: 100%; height: 35px">
+                    <a class="clear left" style="width: 25%">Фамилия</a>
+                    <input class="clear input right" type="text" maxlength="20">
+                </div>
+                
+                <div style="width: 100%; height: 35px">
+                    <a class="clear left" style="width: 25%">Телефон</a>
+                    <input class="clear input right" type="tel" maxlength="15">
+                </div>
+                
+                <div style="width: 100%; height: 35px">
+                    <a class="clear left" style="width: 25%">E-mail</a>
+                    <input class="clear input right" type="email" maxlength="25">
+                </div>
 
+            </div>
+            <button type="submit" class="input" onclick="alert('Успешно!')">Купить</button>
         </div>
-    </div>
+    </form>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="js/main.js"></script>
