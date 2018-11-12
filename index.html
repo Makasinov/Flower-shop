@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <!-- <meta charset="utf-8" /> -->
+    <meta charset="utf-8" />
     <title>Интернет-магазин цветов</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
@@ -19,7 +19,7 @@
                     <div class=icon>
                         <i class="icon-mobile-phone icon-2x"></i>
                     </div>
-                    <a href="#"><span>Все товары</span></a>
+                    <a href="/"><span>Все товары</span></a>
                 </div>
             </li>
             <li class="var_nav">
@@ -65,43 +65,46 @@
         <!-- There is dynamically added code -->
     </div>
 
-    <form id="dialogue" class="noselect">
+    <form id="dialogue" class="noselect" autocomplete="off">
         <img src="https://image.flaticon.com/icons/svg/148/148766.svg" alt="" width="40" height="40" align="right"
             hspace="10" vspace="10" onclick="dialogueWindow()" style="cursor: pointer" id="closeIcon">
-        
+
         <div id="form">
+            <a id="id" style="opacity: 0;"></a>
             <a id="name" class="clear name" style="width: 100%"></a><br>
-            <a id="number" class="clear" style="width: 100%">В наличии: 999</a><br>
+            <a id="number" class="clear" style="width: 100%">В наличии: </a><br>
             <div class="clear mrg" style="width: 100%; height: 20%">
-                <a class="clear">Количество:</a> 
-                <input class="clear input" id="inputNumber" maxlength="3" style="width: 70px"><br>
-                <a id="price" class="clear"></a><br>
-                <a id="final_price" class="clear"></a>
-                <a class="clear full">#р</a>
+                <a class="clear">Количество:</a>
+                <input class="clear input" id="inputNumber" maxlength="3" style="width: 70px" value="1">
+                <a id="price" class="clear left full"></a>
+                <a id="final_price" class="clear left full" style="margin-left: 5px"></a>
             </div>
             <div class="clear mrg" style="width: 100%; height: 40%">
-                
+
                 <div style="width: 100%; height: 35px">
                     <a class="clear left" style="width: 25%">Фамилия</a>
-                    <input class="clear input right" type="text" maxlength="20">
+                    <input class="clear input right" id="user" autocomplete="on" type="text" maxlength="20">
                 </div>
-                
+
                 <div style="width: 100%; height: 35px">
                     <a class="clear left" style="width: 25%">Телефон</a>
-                    <input class="clear input right" type="tel" maxlength="15">
+                    <input class="clear input right" id="tel" type="tel" maxlength="15">
                 </div>
-                
+
                 <div style="width: 100%; height: 35px">
                     <a class="clear left" style="width: 25%">E-mail</a>
-                    <input class="clear input right" type="email" maxlength="25">
+                    <input class="clear input right" id="email" type="email" maxlength="25">
                 </div>
 
             </div>
-            <button type="submit" class="input" onclick="alert('Успешно!')">Купить</button>
+            <button type="submit" class="input" onclick="buy()">Купить</button>
         </div>
     </form>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="js/main.js"></script>
+<script>
+    loadCatalogue();
+</script>
 
 </html>
