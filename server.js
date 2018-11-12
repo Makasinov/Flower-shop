@@ -13,7 +13,7 @@ const app = express();
 app.use(express.static(__dirname));
 
 app.get('/start_page',(req,res) => {
-    console.log('connection....');
+    console.log('New connection....');
     const client = new MongoClient(url, {useNewUrlParser: true});
     client.connect(function(err) {
         assert.equal(null, err);
@@ -21,7 +21,7 @@ app.get('/start_page',(req,res) => {
       
         const db = client.db('myDB');
         db.collection('Store').find(
-            {}, { projection: {_id: 0, name: 1, price: 1, number: 1, img: 1}}).toArray(
+            {}, { projection: {_id: 1, name: 1, price: 1, number: 1, img: 1}}).toArray(
                 (err, result) => {
           if (err) throw err;
           console.log(result);
@@ -33,9 +33,12 @@ app.get('/start_page',(req,res) => {
       });
 });
 
-app.get('/store',(req,res) => {
-    res.send('GET require');
-});
+app.get('/:id', function (req, res, next) {
+    console.log('ID:', req.params.id);
+    next();
+  }, function (req, res, next) {
+    res.send('User Info ' + req.params.id);
+});  
 
 app.post('/store',(req,res) => {
     res.send('POST require');

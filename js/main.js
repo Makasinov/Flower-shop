@@ -19,25 +19,35 @@ xhr.onreadystatechange = () => {
     document.getElementById('content').innerHTML += '</div>';
 }
 
+function dialogueWindow(id) {
+    var dialogue = document.getElementById('dialogue');
+    if  (dialogue.style.display == "block")
+         dialogue.style.display = "none";
+    else 
+    {
+        dialogue.style.display = "block";
+        var a_name = document.getElementById('name');
+        a_name.innerHTML = id;
+    }
+}
+
 function getHTMLBlock(obj) {
     var string = 
-        '<div class="container">' +
+        '<div class="container noselect">' +
             '<div class="title">' +
                 '<a class="name">' +
                     obj.name + 
                 '</a>' +
-                '<a class="jlink" href="#" style="width: 360px">' +
+                `<a class="jlink" onClick="dialogueWindow(\'${obj.name}\')" style="width: 360px">` +
                 '<span class="b">' +
                     obj.price +
                 'р</span>' +
                 '<span class="c">Купить</span>' + 
                 '</a>' + 
-                // '<br>'+ 
             '</div>' +
             '<img src="' +
                 obj.img + 
-            '" width="300" height="300">' +
+            '" width="300" height="300"></img>' +
         '</div>';
-
         return string;
 }
