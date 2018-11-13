@@ -2,6 +2,25 @@ body {
     background: rgb(193,207,194);
 }
 
+.head {
+    margin-left: 25%;
+    margin-bottom: 10px;
+    width: 50%;
+    height: 20px;
+    background: #E01B6A;
+    display: none;
+    border-radius: 10px;
+}
+
+.h3 {
+    text-align: center;
+    color: white;
+    height: inherit;
+    width: min-content;
+    float: left;
+    margin-left: 10px;
+}
+
 #menu {
     width: 10%;
     height: 300px;
@@ -130,12 +149,10 @@ a:hover .c {
 
 .left {
     float: left;
-    text-align: left;
 }
 
 .right {
     float: right;
-    text-align: right;
 }
 
 .clear {

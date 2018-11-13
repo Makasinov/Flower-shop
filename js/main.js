@@ -1,3 +1,18 @@
+function checkSession() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/session');
+    xhr.send();
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState != 4) return;
+        if (xhr.status != 200) {
+            return;
+        }
+        if (xhr.responseText != '')
+            {
+                document.getElementById('adminMode').style.display = 'block';
+            }
+    }
+}
 
 function loadCatalogue() {
     var xhr = new XMLHttpRequest();
