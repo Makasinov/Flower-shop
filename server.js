@@ -65,13 +65,23 @@ app.get('/admin', function (req, res) {
     res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
     if (sess.email) {
         res.write('<h1>Hello ' + sess.email + '</h1>');
-        res.end('<a href="/">Выйти</a><br>' + 
+        res.end('<a href="/admin_exit">Выйти</a><br>' + 
         '<a href="/">Домой</a>');
     } else {
         res.write('<h1>Please login first.</h1>' + 
         '<a href="/">Домой</a><br>');
-        res.end('<a href="/login">Выйти</a>');
+        res.end('<a href="/admin_exit">Выйти</a>');
     }
+});
+
+app.get('/admin_exit', function (req, res) {
+    req.session.destroy((err) => {
+        if (err) {
+            console.log(err);
+        } 
+        res.redirect('/');
+        
+    });
 });
 
 app.get('/logout', function (req, res) {
