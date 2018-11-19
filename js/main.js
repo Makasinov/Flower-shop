@@ -7,10 +7,11 @@ function checkSession() {
         if (xhr.status != 200) {
             return;
         }
-        if (xhr.responseText != '')
-            {
-                document.getElementById('adminMode').style.display = 'block';
-            }
+        if (xhr.responseText != '') {
+            document.getElementById('adminMode').style.display = 'block';
+            document.getElementById('id').style.opacity = '1';
+
+        }
     }
 }
 
@@ -60,7 +61,7 @@ function dialogueWindow(id) {
             var a_final_price = document.getElementById('final_price');
             a_final_price.innerHTML = ` = ${json.price}p`;
             var a_id = document.getElementById('id');
-            a_id.innerHTML = id;
+            a_id.value = id;
         }
         xhr.send();
     }
@@ -96,7 +97,7 @@ function buy() {
     const tel = document.getElementById('tel').value;
     const email = document.getElementById('email').value;
 
-    var url2 =  
+    var url2 =
         `/buy?id=${id}&
         name=${name}&
         inputNumber=${inputNumber}&
@@ -109,9 +110,17 @@ function buy() {
         if (xhr.status != 200) {
             return;
         }
-        // if (xhr.responseText == 'success')
-        //     alert('Вы успешно заказали товар!');
-        alert(xhr.responseText);
+        if (xhr.responseText == 'success')
+            alert('Заказ успешно сформирован!\nОжидайте звонка оператора');
     }
     xhr.send();
 }
+
+var inputNumber = document.getElementById('inputNumber');
+
+inputNumber.oninput = () => {
+    var price = document.getElementById('price').innerHTML;
+    price = price.substr(3, price.length - 4);
+    var finalPrice = document.getElementById('final_price');
+    finalPrice.innerHTML = ' = ' + price * inputNumber.value + 'p';
+};

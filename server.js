@@ -7,8 +7,12 @@ const url = 'mongodb://localhost:27017';
 
 const express = require('express');
 var session = require('express-session');
-var bodyParser = require('body-parser');
 const app = express();
+var bodyParser = require('body-parser');
+
+const nodemailer = require('nodemailer');
+const mailer = 'patrikmaximov749@gmail.com';
+const mailerPass = 'hunter749';
 
 app.use(express.static(__dirname));
 
@@ -17,13 +21,14 @@ app.engine('html', require('ejs').renderFile);
 
 app.use(session({ secret: 'mysecret' }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(express.bodyParser());
 
 var sess;
 
-app.get('*', function(req, res, next) {
+app.get('*', function (req, res, next) {
     sess = req.session;
-    console.log(sess.email);
+    // console.log(sess.email);
     next();
 });
 
@@ -35,13 +40,8 @@ app.get('/session', function (req, res) {
 
 app.get('/', function (req, res) {
     sess = req.session;
-    //Session set when user Request our app via URL
     if (sess.email) {
-        /*
-        * This line check Session existence.
-        * If it existed will do some action.
-        */
-       res.redirect('/admin');
+        res.redirect('/admin');
     }
     else {
         res.render('index.html');
@@ -49,27 +49,38 @@ app.get('/', function (req, res) {
 });
 
 app.get('/login', function (req, res) {
-    res.redirect('/login.html');
+    sess = req.session;
+    console.log(sess);
+    if (sess != undefined && sess.email == 'admin')
+        res.redirect('/admin');
+    else
+        res.redirect('/login.html');
 });
 
 app.post('/login', function (req, res) {
     sess = req.session;
-    //In this we are assigning email to sess.email variable.
-    //email comes from HTML page.
+    if (sess.email == 'admin') res.redirect('/admin');
     sess.email = req.body.email;
-    res.end('done');
+    var passwd = req.body.pass;
+    console.log(sess.email, passwd);
+    if (sess.email == 'admin' && passwd == 'admin')
+        res.end('done');
+    else {
+        res.send('error');
+        res.end('error');
+    }
 });
 
 app.get('/admin', function (req, res) {
     sess = req.session;
-    res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
     if (sess.email) {
         res.write('<h1>Hello ' + sess.email + '</h1>');
-        res.end('<a href="/admin_exit">Выйти</a><br>' + 
-        '<a href="/">Домой</a>');
+        res.end('<a href="/admin_exit">Выйти</a><br>' +
+            '<a href="/">Домой</a>');
     } else {
-        res.write('<h1>Please login first.</h1>' + 
-        '<a href="/">Домой</a><br>');
+        res.write('<h1>Please login first.</h1>' +
+            '<a href="/">Домой</a><br>');
         res.end('<a href="/admin_exit">Выйти</a>');
     }
 });
@@ -78,9 +89,9 @@ app.get('/admin_exit', function (req, res) {
     req.session.destroy((err) => {
         if (err) {
             console.log(err);
-        } 
+        }
         res.redirect('/');
-        
+
     });
 });
 
@@ -96,20 +107,7 @@ app.get('/logout', function (req, res) {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// ----------------------------------------------------------------------- //
 
 
 
@@ -118,11 +116,44 @@ const get_url = '/get/';
 
 app.get('/buy*', (req, res) => {
     var str = req.url.substr(buy_url.length, req.url.length);
+    str = decodeURIComponent(str);
     str = str.split('&');
     for (var i = 0; i < str.length; i++)
         str[i] = str[i].substr(str[i].indexOf('=') + 1, str[i].length);
     console.log(str);
-    res.send(str);
+
+    bodyText = `<h1>Здравствуйте ${str[3]}!</h1><br>
+                Вы заказывали на нашем сайте <strong>${str[1]}</strong> в количестве ${str[2]} шт<br> 
+                Ваш заказ находится в обработке, 
+                ждите звонка оператора на номер телефона - <a href="tel:${str[4]}"><strong>${str[4]}</strong></a>.<br>
+                <h5>Спасибо за заказ!</h5>`;
+
+    nodemailer.createTestAccount((err, account) => {
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: mailer,
+                pass: mailerPass,
+            }
+        });
+
+        const mailOptions = {
+            from: mailer,
+            to: str[5],
+            subject: 'Ваш заказ в обработке!',
+            text: bodyText,
+            html: bodyText
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            console.log('Message sent: %s', info.messageId);
+        });
+    });
+
+    res.send('success');
 });
 
 app.get('/get/*', (req, res) => {

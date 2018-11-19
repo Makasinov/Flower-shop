@@ -22,34 +22,7 @@
                     <div class=icon>
                         <i class="icon-mobile-phone icon-2x"></i>
                     </div>
-                    <a href="/"><span>Все товары</span></a>
-                </div>
-            </li>
-            <li class="var_nav">
-                <div class="link_bg"></div>
-                <div class="link_title">
-                    <div class=icon>
-                        <i class="icon-lightbulb icon-2x"></i>
-                    </div>
-                    <a href="#"><span>Цветы в корзине</span></a>
-                </div>
-            </li>
-            <li class="var_nav">
-                <div class="link_bg"></div>
-                <div class="link_title">
-                    <div class=icon>
-                        <i class="icon-wrench icon-2x"></i>
-                    </div>
-                    <a href="#"><span>Цветы в коробке</span></a>
-                </div>
-            </li>
-            <li class="var_nav">
-                <div class="link_bg"></div>
-                <div class="link_title">
-                    <div class=icon>
-                        <i class="icon-briefcase icon-2x"></i>
-                    </div>
-                    <a href="#"><span>Букеты</span></a>
+                    <a href="/"><span>Домой</span></a>
                 </div>
             </li>
             <li class="var_nav">
@@ -73,7 +46,6 @@
             hspace="10" vspace="10" onclick="dialogueWindow()" style="cursor: pointer" id="closeIcon">
 
         <div id="form">
-            <a id="id" style="opacity: 0;"></a>
             <a id="name" class="clear name" style="width: 100%"></a><br>
             <a id="number" class="clear" style="width: 100%">В наличии: </a><br>
             <div class="clear mrg" style="width: 100%; height: 20%">
@@ -83,9 +55,9 @@
                 <a id="final_price" class="clear left full" style="margin-left: 5px"></a>
             </div>
             <div class="clear mrg" style="width: 100%; height: 40%">
-
+                
                 <div style="width: 100%; height: 35px">
-                    <a class="clear left" style="width: 25%">Фамилия</a>
+                    <a class="clear left" style="width: 25%">Имя</a>
                     <input class="clear input right" id="user" autocomplete="on" type="text" maxlength="20">
                 </div>
 
@@ -101,6 +73,7 @@
 
             </div>
             <button type="submit" class="input" onclick="buy()">Купить</button>
+            <input id="id" style="opacity: 0;"></input>
         </div>
     </form>
 </body>
