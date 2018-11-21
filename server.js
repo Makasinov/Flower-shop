@@ -75,8 +75,11 @@ app.get('/admin', function (req, res) {
     sess = req.session;
     res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
     if (sess.email) {
-        res.write('<h1>Hello ' + sess.email + '</h1>');
-        res.end('<a href="/admin_exit">Выйти</a><br>' +
+        res.write('<h1>Hello ' + sess.email + '</h1>' +
+            '<h3 id="delete_me_after">I\'m loading....</h3>' +
+            '<div id="main_container"></div>' +
+            '<script src="js/admin_funcs.js"></script>');
+        res.end('<br><a href="/admin_exit">Выйти</a><br>' +
             '<a href="/">Домой</a>');
     } else {
         res.write('<h1>Please login first.</h1>' +
@@ -123,7 +126,8 @@ app.get('/buy*', (req, res) => {
     console.log(str);
 
     bodyText = `<h1>Здравствуйте ${str[3]}!</h1><br>
-                Вы заказывали на нашем сайте <strong>${str[1]}</strong> в количестве ${str[2]} шт<br> 
+                Вы заказывали на нашем сайте <strong>${str[1]}</strong> в количестве ${str[2]} шт<br>
+                Сумма заказа - ${str[6]}р<br>
                 Ваш заказ находится в обработке, 
                 ждите звонка оператора на номер телефона - <a href="tel:${str[4]}"><strong>${str[4]}</strong></a>.<br>
                 <h5>Спасибо за заказ!</h5>`;
@@ -203,7 +207,7 @@ app.get('/start_page', (req, res) => {
             {}, { projection: { _id: 1, name: 1, price: 1, number: 1, img: 1 } }).toArray(
                 (err, result) => {
                     if (err) throw err;
-                    //console.log(result);
+                    console.log(result);
                     res.send(result);
                     res.end();
                 });
@@ -211,6 +215,11 @@ app.get('/start_page', (req, res) => {
         client.close();
     });
 });
+
+
+
+
+// * --------------------------------------------------- * //
 
 app.use((req, res, next) => {
     res.status(404).send('Sorry cant find that!');

@@ -89,21 +89,23 @@ function getHTMLBlock(obj) {
 }
 
 function buy() {
-    var xhr = new XMLHttpRequest();
     const id = document.getElementById('id').innerHTML;
     var name = document.getElementById('name').innerHTML;
     const inputNumber = document.getElementById('inputNumber').value;
     const user = document.getElementById('user').value;
     const tel = document.getElementById('tel').value;
     const email = document.getElementById('email').value;
-
+    var final_price = document.getElementById('final_price').innerHTML;
+    final_price = final_price.substr(3, final_price.length - 4);
     var url2 =
-        `/buy?id=${id}&
-        name=${name}&
-        inputNumber=${inputNumber}&
-        user=${user}&
-        tel=${tel}&
-        email=${email}`;
+    `/buy?id=${id}&
+    name=${name}&
+    inputNumber=${inputNumber}&
+    user=${user}&
+    tel=${tel}&
+    email=${email}&
+    final_price=${final_price}`;
+    var xhr = new XMLHttpRequest();
     xhr.open('GET', url2);
     xhr.onreadystatechange = () => {
         if (xhr.readyState != 4) return;
