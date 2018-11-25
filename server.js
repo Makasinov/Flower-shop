@@ -50,7 +50,7 @@ app.get('/', function (req, res) {
 
 app.get('/login', function (req, res) {
     sess = req.session;
-    console.log(sess);
+    // console.log(sess);
     if (sess != undefined && sess.email == 'admin')
         res.redirect('/admin');
     else
@@ -62,7 +62,7 @@ app.post('/login', function (req, res) {
     if (sess.email == 'admin') res.redirect('/admin');
     sess.email = req.body.email;
     var passwd = req.body.pass;
-    console.log(sess.email, passwd);
+    // console.log(sess.email, passwd);
     if (sess.email == 'admin' && passwd == 'admin')
         res.end('done');
     else {
@@ -76,15 +76,19 @@ app.get('/admin', function (req, res) {
     res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
     if (sess.email) {
         res.write('<h1>Hello ' + sess.email + '</h1>' +
-            '<h3 id="delete_me_after">I\'m loading....</h3>' +
+            // '<h3 id="delete_me_after">I\'m loading....</h3>' +
+            '<div id="delete_me_after">' +
+            '<span class="cssload-loader"><span class="cssload-loader-inner"></span></span>' +
+            '</div>' +
             '<div id="main_container"></div>' +
-            '<script src="js/admin_funcs.js"></script>');
+            '<link rel="stylesheet" href="css/loading_icon.css">' +
+            '<script src="js/admin_funcs.js" async></script>');
         res.end('<br><a href="/admin_exit">Выйти</a><br>' +
             '<a href="/">Домой</a>');
     } else {
         res.write('<h1>Please login first.</h1>' +
             '<a href="/">Домой</a><br>');
-        res.end('<a href="/admin_exit">Выйти</a>');
+        res.end('<a href="/login">Войти</a>');
     }
 });
 
@@ -113,7 +117,6 @@ app.get('/logout', function (req, res) {
 // ----------------------------------------------------------------------- //
 
 
-
 const buy_url = '/buy?';
 const get_url = '/get/';
 
@@ -123,15 +126,16 @@ app.get('/buy*', (req, res) => {
     str = str.split('&');
     for (var i = 0; i < str.length; i++)
         str[i] = str[i].substr(str[i].indexOf('=') + 1, str[i].length);
-    console.log(str);
+    // console.log(str);
 
     bodyText = `<h1>Здравствуйте ${str[3]}!</h1><br>
-                Вы заказывали на нашем сайте <strong>${str[1]}</strong> в количестве ${str[2]} шт<br>
-                Сумма заказа - ${str[6]}р<br>
-                Ваш заказ находится в обработке, 
-                ждите звонка оператора на номер телефона - <a href="tel:${str[4]}"><strong>${str[4]}</strong></a>.<br>
-                <h5>Спасибо за заказ!</h5>`;
+        Вы заказывали на нашем сайте <strong>${str[1]}</strong> в количестве ${str[2]} шт<br>
+        Сумма заказа - ${str[6]}р<br>
+        Ваш заказ находится в обработке, 
+        ждите звонка оператора на номер телефона - <a href="tel:${str[4]}"><strong>${str[4]}</strong></a>.<br>
+        <h5>Спасибо за заказ!</h5>`;
 
+    // console.log(bodyText);
     nodemailer.createTestAccount((err, account) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -151,9 +155,10 @@ app.get('/buy*', (req, res) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                return console.log(error);
+                console.log(error);
+                return;
             }
-            console.log('Message sent: %s', info.messageId);
+            // console.log('Message sent: %s', info.messageId);
         });
     });
 
@@ -207,7 +212,7 @@ app.get('/start_page', (req, res) => {
             {}, { projection: { _id: 1, name: 1, price: 1, number: 1, img: 1 } }).toArray(
                 (err, result) => {
                     if (err) throw err;
-                    console.log(result);
+                    // console.log(result);
                     res.send(result);
                     res.end();
                 });

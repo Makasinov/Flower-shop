@@ -31,17 +31,23 @@ function loadCatalogue() {
             return value;
         });
         if (count > 10) count = 10;
+        document.getElementById('content').innerHTML = '';
         for (var i = 0; i < count; i++)
             document.getElementById('content').innerHTML += getHTMLBlock(json[i]);
         document.getElementById('content').innerHTML += '</div>';
     }
 }
 
+
 function dialogueWindow(id) {
     var dialogue = document.getElementById('dialogue');
-    if (dialogue.style.display == "block")
+    if (dialogue.style.display == "block") {
+        document.getElementById('delete_me').style.display = "block";
         dialogue.style.display = "none";
+    }
     else {
+        document.getElementById('form').style.display = "none";
+        dialogue.style.display = "block";
         var xhr = new XMLHttpRequest();
         var url = '/get/' + id;
         xhr.open('GET', url);
@@ -51,7 +57,6 @@ function dialogueWindow(id) {
                 return;
             }
             var json = JSON.parse(xhr.responseText);
-            dialogue.style.display = "block";
             var a_name = document.getElementById('name');
             a_name.innerHTML = json.name;
             var a_number = document.getElementById('number');
@@ -62,6 +67,8 @@ function dialogueWindow(id) {
             a_final_price.innerHTML = ` = ${json.price}p`;
             var a_id = document.getElementById('id');
             a_id.value = id;
+            document.getElementById('form').style.display = "block";
+            document.getElementById('delete_me').style.display = "none";
         }
         xhr.send();
     }
@@ -97,25 +104,39 @@ function buy() {
     const email = document.getElementById('email').value;
     var final_price = document.getElementById('final_price').innerHTML;
     final_price = final_price.substr(3, final_price.length - 4);
-    var url2 =
-    `/buy?id=${id}&
-    name=${name}&
-    inputNumber=${inputNumber}&
-    user=${user}&
-    tel=${tel}&
-    email=${email}&
-    final_price=${final_price}`;
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url2);
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState != 4) return;
-        if (xhr.status != 200) {
-            return;
+
+    if (inputNumber != '' && user != '' && tel != '' && email != '' && final_price != '0') {
+
+
+        var url2 =
+            `/buy?id=${id}&
+        name=${name}&
+        inputNumber=${inputNumber}&
+        user=${user}&
+        tel=${tel}&
+        email=${email}&
+        final_price=${final_price}`;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url2);
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState != 4) {
+                alert('При оформлении заказа произошла ошибка!\nПопробуйте позже :(');
+                return;
+            }
+            if (xhr.status != 200) {
+                alert('При оформлении заказа произошла ошибка!\nПопробуйте позже :(');
+                return;
+            }
+            if (xhr.responseText == 'success') {
+                alert('Заказ успешно сформирован!\nОжидайте звонка оператора');
+                window.location = "/";
+            } else {
+                alert('При оформлении заказа произошла ошибка!\nПопробуйте позже :(');
+
+            }
         }
-        if (xhr.responseText == 'success')
-            alert('Заказ успешно сформирован!\nОжидайте звонка оператора');
-    }
-    xhr.send();
+        xhr.send();
+    } else alert('Возникла ошибка!\nВозможно вы не заполнили некоторые поля');
 }
 
 var inputNumber = document.getElementById('inputNumber');
