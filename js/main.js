@@ -96,18 +96,18 @@ function getHTMLBlock(obj) {
 }
 
 function buy() {
-    const id = document.getElementById('id').innerHTML;
-    var name = document.getElementById('name').innerHTML;
-    const inputNumber = document.getElementById('inputNumber').value;
-    const user = document.getElementById('user').value;
-    const tel = document.getElementById('tel').value;
-    const email = document.getElementById('email').value;
-    var final_price = document.getElementById('final_price').innerHTML;
-    final_price = final_price.substr(3, final_price.length - 4);
+    const id = document.getElementById('product_id').innerHTML;
+    var name = document.getElementById('product_name').innerHTML;
+    const inputNumber = document.getElementById('user_quantity').value;
+    const user = document.getElementById('user_name').value;
+    const tel = document.getElementById('user_mobile').value;
+    const email = document.getElementById('user_email').value;
+    // var final_price = document.getElementById('final_price').innerHTML;
+    // final_price = final_price.substr(3, final_price.length - 4);
+
+    var final_price = 1;
 
     if (inputNumber != '' && user != '' && tel != '' && email != '' && final_price != '0') {
-
-
         var url2 =
             `/buy?id=${id}&
         name=${name}&
@@ -118,9 +118,12 @@ function buy() {
         final_price=${final_price}`;
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url2);
+        let counter = 0;
         xhr.onreadystatechange = () => {
             if (xhr.readyState != 4) {
-                alert('При оформлении заказа произошла ошибка!\nПопробуйте позже :(');
+                counter++;
+                if (counter > 4)
+                    alert('При оформлении заказа произошла ошибка!\nПопробуйте позже :(');
                 return;
             }
             if (xhr.status != 200) {
@@ -132,7 +135,6 @@ function buy() {
                 window.location = "/";
             } else {
                 alert('При оформлении заказа произошла ошибка!\nПопробуйте позже :(');
-
             }
         }
         xhr.send();

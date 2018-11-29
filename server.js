@@ -77,6 +77,7 @@ app.get('/admin', function (req, res) {
     if (sess.email) {
         res.write('<h1>Hello ' + sess.email + '</h1>' +
             // '<h3 id="delete_me_after">I\'m loading....</h3>' +
+            // '<link rel="stylesheet" href="css/style.css">' +
             '<div id="delete_me_after">' +
             '<span class="cssload-loader"><span class="cssload-loader-inner"></span></span>' +
             '</div>' +
