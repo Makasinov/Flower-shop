@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include head %>
+</head>
+
+<body>
+    <% include header %>
+    <div class="alert alert-secondary center" role="alert">
+        <h1>
+            <%= data['name'] %>
+        </h1>
+    </div>
+    <div class="content_img" style="text-align: center">
+        <img alt="Картинка" src="/<%= data['img'] %>">
+        <h3>В наличии <%= data['number'] %> штук</h3>
+    </div>
+</body>
+
+</html>

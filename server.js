@@ -46,10 +46,53 @@ app.get('/', async function (req, res) {
     if (sess.email) {
         res.redirect('/admin');
     } else {
+
+        var os = require('os');
+        var ifaces = os.networkInterfaces();
+        var ip = require('ip');
+
+        let myIp;
+        Object.keys(ifaces).forEach(function (ifname) {
+            var alias = 0;
+
+            ifaces[ifname].forEach(function (iface) {
+                if ('IPv4' !== iface.family || iface.internal !== false) {
+                    // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+                    console.log(iface);
+                    return;
+                }
+
+                if (alias >= 1) {
+                    // this single interface has multiple ipv4 addresses
+                    // console.log(ifname + ':' + alias, iface.address);
+                } else {
+                    // this interface has only one ipv4 adress
+                    if (ip.address() == iface.address)
+                        myIp = ip.address();
+                    // console.log('my ip -> ',ip.address(),'\tconnected ip -> ', iface.address);
+                    // console.log(myIp);
+                }
+                ++alias;
+            });
+        });
+
+
         res.render('home', {
-            data: products
+            data: products,
+            adress: myIp
         });
     }
+});
+
+app.get('/product/:id', async function (req, res) {
+    sess = req.session;
+    let products = await getProducts();
+    products = products.filter(item => item['_id'] == req.params.id);
+    product = products[0];
+    // console.log(product);
+    res.render('view_page.ejs', {
+        data: product
+    })
 });
 
 app.get('/login', function (req, res) {
@@ -120,6 +163,35 @@ app.get('/logout', function (req, res) {
 
 });
 
+app.get('/start_page', (req, res) => {
+    // console.log('Прогрузка каталога....');
+    var client = new MongoClient(url, {
+        useNewUrlParser: true
+    });
+    client.connect(function (err) {
+        assert.equal(null, err);
+        //console.log("Connected successfully to server");
+
+        const db = client.db('myDB');
+        db.collection('Store').find({}, {
+            projection: {
+                _id: 1,
+                name: 1,
+                price: 1,
+                number: 1,
+                img: 1
+            }
+        }).toArray(
+            (err, result) => {
+                if (err) throw err;
+                console.log(result);
+                res.send(result);
+                res.end();
+            });
+
+        client.close();
+    });
+});
 
 // ----------------------------------------------------------------------- //
 
@@ -249,8 +321,6 @@ function getProducts() {
     });
     // console.log('--->   ', answer);
 }
-
-
 
 // * --------------------------------------------------- * //
 
