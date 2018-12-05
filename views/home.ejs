@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include head %>
+</head>
+
+<body>
+    <% include header %>
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <% for (let i = 0; i < data.length; i++) { %>
+                    <%- include('data_block',{
+                        id  : data[i]['_id'],
+                        img : data[i]['img'],
+                        description : data[i]['name'],
+                        price : data[i]['price']}) %>
+                <% } %>
+            </div>
+            
+        </div>
+    </div>
+</body>
+
+</html>
