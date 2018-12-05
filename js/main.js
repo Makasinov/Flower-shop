@@ -10,7 +10,6 @@ function checkSession() {
         if (xhr.responseText != '') {
             document.getElementById('adminMode').style.display = 'block';
             document.getElementById('id').style.opacity = '1';
-
         }
     }
 }
@@ -142,6 +141,8 @@ function buy() {
 }
 
 var inputNumber = document.getElementById('inputNumber');
+
+// loadCatalogue();
 
 inputNumber.oninput = () => {
     var price = document.getElementById('price').innerHTML;

@@ -1,4 +1,3 @@
-
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
@@ -17,12 +16,15 @@ const mailerPass = 'hunter749';
 app.use(express.static(__dirname));
 
 app.set('views', __dirname + '/views');
-app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'ejs');
 
-app.use(session({ secret: 'mysecret' }));
+app.use(session({
+    secret: 'mysecret'
+}));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(express.bodyParser());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 
 var sess;
 
@@ -38,13 +40,15 @@ app.get('/session', function (req, res) {
     res.end();
 });
 
-app.get('/', function (req, res) {
+app.get('/', async function (req, res) {
     sess = req.session;
+    var products = await getProducts();
     if (sess.email) {
         res.redirect('/admin');
-    }
-    else {
-        res.render('index.html');
+    } else {
+        res.render('home', {
+            data: products
+        });
     }
 });
 
@@ -73,7 +77,9 @@ app.post('/login', function (req, res) {
 
 app.get('/admin', function (req, res) {
     sess = req.session;
-    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    res.writeHead(200, {
+        "Content-Type": "text/html; charset=utf-8"
+    });
     if (sess.email) {
         res.write('<h1>Hello ' + sess.email + '</h1>' +
             // '<h3 id="delete_me_after">I\'m loading....</h3>' +
@@ -171,57 +177,78 @@ app.get('/get/*', (req, res) => {
         var responde = '';
         var id = req.url.substr(get_url.length, req.url.length);
         // console.log('--> ' + get_url + id);
-        const client = new MongoClient(url, { useNewUrlParser: true });
+        const client = new MongoClient(url, {
+            useNewUrlParser: true
+        });
 
         client.connect(function (err) {
             assert.equal(null, err);
             // console.log('Есть соединение');
             const db = client.db('myDB');
-            db.collection('Store').find(
-                {}, { projection: { _id: 1, name: 1, price: 1, number: 1, img: 1 } }).toArray(
-                    (err, result) => {
-                        if (err) throw err;
-                        // console.log('Нет ошибок');
-                        for (var i = 0; i < result.length; i++) {
-                            if (result[i]._id == id) {
-                                // console.log(result[i]._id + ' FOUNDED!');
-                                responde = result[i];
-                            }
-
-                            // console.log(result[i]._id);
+            db.collection('Store').find({}, {
+                projection: {
+                    _id: 1,
+                    name: 1,
+                    price: 1,
+                    number: 1,
+                    img: 1
+                }
+            }).toArray(
+                (err, result) => {
+                    if (err) throw err;
+                    // console.log('Нет ошибок');
+                    for (var i = 0; i < result.length; i++) {
+                        if (result[i]._id == id) {
+                            // console.log(result[i]._id + ' FOUNDED!');
+                            responde = result[i];
                         }
-                        // console.log(' <-- End of search --> ');
-                        // console.log('I will send this');
-                        // console.log(responde);
-                        res.send(responde);
-                        res.end();
-                    });
+
+                        // console.log(result[i]._id);
+                    }
+                    // console.log(' <-- End of search --> ');
+                    // console.log('I will send this');
+                    // console.log(responde);
+                    res.send(responde);
+                    res.end();
+                });
             client.close();
         });
     }
 });
 
-app.get('/start_page', (req, res) => {
-    // console.log('Прогрузка каталога....');
-    var client = new MongoClient(url, { useNewUrlParser: true });
-    client.connect(function (err) {
-        assert.equal(null, err);
-        //console.log("Connected successfully to server");
+function getProducts() {
+    return new Promise((resolve, reject) => {
+        var client = new MongoClient(url, {
+            useNewUrlParser: true
+        });
+        client.connect(function (err) {
+            assert.equal(null, err);
+            //console.log("Connected successfully to server");
 
-        const db = client.db('myDB');
-        db.collection('Store').find(
-            {}, { projection: { _id: 1, name: 1, price: 1, number: 1, img: 1 } }).toArray(
+            const db = client.db('myDB');
+            db.collection('Store').find({}, {
+                projection: {
+                    _id: 1,
+                    name: 1,
+                    price: 1,
+                    number: 1,
+                    img: 1
+                }
+            }).toArray(
                 (err, result) => {
-                    if (err) throw err;
-                    // console.log(result);
-                    res.send(result);
-                    res.end();
+                    if (err) {
+                        reject(err);
+                        throw err;
+                    }
+                    // console.log('getProducts() -> ', result);
+                    resolve(result);
+                    // return result;
                 });
-
-        client.close();
+            client.close();
+        });
     });
-});
-
+    // console.log('--->   ', answer);
+}
 
 
 
