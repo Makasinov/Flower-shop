@@ -1,3 +1,5 @@
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@fat">Open modal for @fat</button> -->
+
 <div class="col-md-4">
     <div class="card mb-4 shadow-sm">
 
@@ -12,7 +14,13 @@
                 <div class="btn-group">
                     <button type="button" id="<%= id %>" class="btn btn-sm btn-outline-secondary">
                         Посмотреть</button>
-                    <button class="btn btn-info btn-lg" type="button">Заказать</button>
+                    <% if (quantity <= 0) { %>
+                        <button class="btn btn-secondary btn-info btn-lg" type="button" disabled>Отсутствует</button>
+                    <% } else { %>
+                        <button class="btn btn-secondary btn-info btn-lg" type="button" 
+                        data-toggle="modal" data-target="#exampleModal" 
+                        data-id="<%= id %>" data-quantity="<%= quantity %>" data-name="<%= description %>" data-price="<%= price %>">Заказать</button>
+                    <% } %>
                 </div>
                 <small class="text-muted">
                     <%= price %>р</small>

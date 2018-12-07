@@ -7,15 +7,67 @@
 
 <body>
     <% include header %>
-    <div class="alert alert-secondary center" role="alert">
-        <h1>
-            <%= data['name'] %>
-        </h1>
+    <div class="alert box" role="alert">
+        <div class="alert alert-secondary center" role="alert">
+            <h2>
+                <%= data['name'] %>
+            </h2>
+        </div>
+        <div class="content_img" style="text-align: center">
+            <img alt="Картинка" src="/<%= data['img'] %>">
+            <h3>В наличии
+                <%= data['number'] %> штук</h3>
+            <h4>Цена за 1 шт - <strong>
+                    <%= data['price'] %>р</strong></h4>
+        </div>
+        <br>
+        <% if (data['number'] > 0) { %>
+            <button type="button" class="btn btn-primary btn-success" data-toggle="modal" data-target="#exampleModal" data-whatever="<%= data['name'] %>">Купить</button>
+        <% } %>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true" style="text-align: left">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">форма заказа</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Хочу приобрести</label>
+                                <input type="text" class="form-control" id="recipient-name" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label">Message:</label>
+                                <textarea class="form-control" id="message-text"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Send message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var recipient = button.data('whatever') // Extract info from data-* attributes
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                var modal = $(this)
+                modal.find('.modal-title').text('Форма заказа')
+                modal.find('.modal-body input').val(recipient)
+            })
+        </script>
     </div>
-    <div class="content_img" style="text-align: center">
-        <img alt="Картинка" src="/<%= data['img'] %>">
-        <h3>В наличии <%= data['number'] %> штук</h3>
-    </div>
+
 </body>
 
 </html>

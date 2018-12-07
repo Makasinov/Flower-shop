@@ -43,13 +43,10 @@ app.get('/session', function (req, res) {
 app.get('/', async function (req, res) {
     sess = req.session;
     var products = await getProducts();
-    if (sess.email) {
-        res.redirect('/admin');
-    } else {
-        res.render('home', {
-            data: products
-        });
-    }
+
+    res.render('home', {
+        data: products
+    });
 });
 
 app.get('/product/:id', async function (req, res) {
