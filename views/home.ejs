@@ -11,14 +11,15 @@
         <div class="container">
             <div class="row">
                 <% for (let i = 0; i < data.length; i++) { %>
-                    <%- include('data_block',{
+                <%- include('data_block',{
                         id  : data[i]['_id'],
                         img : data[i]['img'],
                         description : data[i]['name'],
-                        price : data[i]['price']}) %>
+                        price : data[i]['price']
+                    }) %>
                 <% } %>
             </div>
-            
+
         </div>
     </div>
 </body>

@@ -43,8 +43,7 @@ function dialogueWindow(id) {
     if (dialogue.style.display == "block") {
         document.getElementById('delete_me').style.display = "block";
         dialogue.style.display = "none";
-    }
-    else {
+    } else {
         document.getElementById('form').style.display = "none";
         dialogue.style.display = "block";
         var xhr = new XMLHttpRequest();
@@ -142,7 +141,16 @@ function buy() {
 
 var inputNumber = document.getElementById('inputNumber');
 
-// loadCatalogue();
+
+document.addEventListener('DOMContentLoaded', function () {
+    let buttons = document.getElementsByClassName("btn btn-sm btn-outline-secondary");
+    for (let i = 0; i < buttons.length; i++) {
+        const el = buttons[i];
+        const str = `window.location= 'http://${location.host}/product/${el.id}'`
+        el.setAttribute("onclick",str);
+        console.log(el.onClick);
+    }
+});
 
 inputNumber.oninput = () => {
     var price = document.getElementById('price').innerHTML;

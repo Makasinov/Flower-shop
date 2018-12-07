@@ -52,6 +52,17 @@ app.get('/', async function (req, res) {
     }
 });
 
+app.get('/product/:id', async function (req, res) {
+    sess = req.session;
+    let products = await getProducts();
+    products = products.filter(item => item['_id'] == req.params.id);
+    product = products[0];
+    // console.log(product);
+    res.render('view_page.ejs', {
+        data: product
+    })
+});
+
 app.get('/login', function (req, res) {
     sess = req.session;
     // console.log(sess);
@@ -120,6 +131,35 @@ app.get('/logout', function (req, res) {
 
 });
 
+app.get('/start_page', (req, res) => {
+    // console.log('Прогрузка каталога....');
+    var client = new MongoClient(url, {
+        useNewUrlParser: true
+    });
+    client.connect(function (err) {
+        assert.equal(null, err);
+        //console.log("Connected successfully to server");
+
+        const db = client.db('myDB');
+        db.collection('Store').find({}, {
+            projection: {
+                _id: 1,
+                name: 1,
+                price: 1,
+                number: 1,
+                img: 1
+            }
+        }).toArray(
+            (err, result) => {
+                if (err) throw err;
+                console.log(result);
+                res.send(result);
+                res.end();
+            });
+
+        client.close();
+    });
+});
 
 // ----------------------------------------------------------------------- //
 
@@ -249,8 +289,6 @@ function getProducts() {
     });
     // console.log('--->   ', answer);
 }
-
-
 
 // * --------------------------------------------------- * //
 
