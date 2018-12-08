@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include head %>
+</head>
+
+<body>
+    <div class="alert alert-primary box" style="margin-top: 20px">
+        <form method="post" enctype="multipart/form-data" action="fileupload" onsubmit="return add_product()">
+            <label for="product_name">Наименование товара</label>
+            <input class="form-control" name="product_name" type="text" id="product_name">
+
+            <label for="product_price">Стоимость</label>
+            <input type="number" class="form-control" placeholder="в рублях" id="product_price" min="0" name="product_price">
+
+            <label for="product_quantity">Количество</label>
+            <input type="number" class="form-control" id="product_quantity" min="0" name="product_quantity">
+            <br>
+            <div class="input-group mb-3" style="width: 400px">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="filetoupload" id="inputGroupFile01"
+                        aria-describedby="inputGroupFileAddon01" oninput="changeName()" name="product_file">
+                    <label class="custom-file-label" for="inputGroupFile01" id="file_name">Выбрать файл</label>
+                </div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroupFileAddon01">Картинка продукта</span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+
+
+
+        <script>
+            function changeName() {
+                if (document.getElementById('inputGroupFile01').files.length > 0) {
+                    var product_img = document.getElementById('inputGroupFile01').files[0];
+                    document.getElementById('file_name').innerHTML = product_img.name;
+                    return product_img;
+                } else
+                    return NaN;
+            };
+
+            function add_product() {
+                var inputs = document.getElementsByTagName("input");
+                var product_name = inputs[0].value;
+                var product_price = inputs[1].value;
+                var product_quantity = inputs[2].value;
+                var product_img = changeName();
+
+                if (product_name != '' &&
+                    product_price != '' && 
+                    product_quantity != '' && 
+                    product_img.name != undefined &&
+                    (product_img.name.includes('.jpg') || product_img.name.includes('.png'))
+                    )
+                    return true;
+                else {
+                    alert('Ошибка');
+                    return false;
+                }
+
+            }
+        </script>
+    </div>
+</body>
+
+</html>

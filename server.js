@@ -1,5 +1,11 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+var http = require('http');
+var formidable = require('formidable');
+var fs = require('fs');
+
+var http = require('http');
+var formidable = require('formidable');
 
 // Connection URL
 const url = 'mongodb://localhost:27017';
@@ -34,11 +40,66 @@ app.get('*', function (req, res, next) {
     next();
 });
 
-app.get('/session', function (req, res) {
+app.get('/admin/remove/:id', function (req, res) {
+    console.log('remove ', req.params.id);
     sess = req.session;
-    res.send(sess.email);
-    res.end();
-});
+    if (sess != undefined && sess.email == 'admin') {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db("myDB");
+
+            // dbo.collection("Store").insertOne(myObj, function (err, res) {
+            dbo.collection('Store', function (err, collection) {
+                collection.deleteOne({
+                    _id: new require('mongodb').ObjectID(req.params.id)
+                });
+                if (err) throw err;
+                console.log("1 document deleted");
+                res.redirect('/admin');
+            });
+        });
+    }
+})
+
+app.post('/admin/fileupload', function (req, res) {
+    sess = req.session;
+    if (sess != undefined && sess.email == 'admin') {
+        var form = new formidable.IncomingForm();
+        form.parse(req, function (err, fields, files) {
+            var myObj = {
+                name: fields['product_name'],
+                price: fields['product_price'],
+                number: fields['product_quantity'],
+                img: '/img/' + files.filetoupload.name
+            }
+
+            MongoClient.connect(url, function (err, db) {
+                if (err) throw err;
+                var dbo = db.db("myDB");
+
+                dbo.collection("Store").insertOne(myObj, function (err, res) {
+                    if (err) throw err;
+                    //   console.log("1 document inserted");
+                    db.close();
+                });
+            });
+
+            var oldpath = files.filetoupload.path;
+            var newpath = './img/' + files.filetoupload.name;
+            fs.rename(oldpath, newpath, function (err) {
+                if (err) throw err;
+                res.redirect('/admin');
+            });
+
+        });
+    }
+})
+
+// app.get('/session', function (req, res) {
+//     sess = req.session;
+//     res.send(sess.email);
+//     res.end();
+// });
 
 app.get('/', async function (req, res) {
     sess = req.session;
@@ -80,6 +141,15 @@ app.post('/login', function (req, res) {
     else {
         res.send('error');
         res.end('error');
+    }
+});
+
+app.get('/admin/new', function (req, res) {
+    sess = req.session;
+    if (sess.email) {
+        res.render('admin_product_new');
+    } else {
+        res.redirect('/login');
     }
 });
 
@@ -149,7 +219,7 @@ app.get('/start_page', (req, res) => {
         }).toArray(
             (err, result) => {
                 if (err) throw err;
-                console.log(result);
+                // console.log(result);
                 res.send(result);
                 res.end();
             });

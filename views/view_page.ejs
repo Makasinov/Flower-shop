@@ -14,7 +14,7 @@
             </h2>
         </div>
         <div class="content_img" style="text-align: center">
-            <img alt="Картинка" src="/<%= data['img'] %>">
+            <img alt="Картинка" src="<%= data['img'] %>" width="300" height="auto">
             <h3>В наличии
                 <%= data['number'] %> штук</h3>
             <h4>Цена за 1 шт - <strong>
@@ -22,9 +22,11 @@
         </div>
         <br>
         <% if (data['number'] > 0) { %>
-            <button type="button" class="btn btn-primary btn-success" 
-            data-id="<%= data['_id'] %>" data-quantity="<%= data['number'] %>" data-name="<%= data['name'] %>" data-price="<%= data['price'] %>"
-            data-toggle="modal" data-target="#exampleModal" data-whatever="<%= data['name'] %>">Купить</button>
+            <div style="text-align: center">
+                <button type="button" class="btn btn-primary btn-success"  
+                data-id="<%= data['_id'] %>" data-quantity="<%= data['number'] %>" data-name="<%= data['name'] %>" data-price="<%= data['price'] %>"
+                data-toggle="modal" data-target="#exampleModal" data-whatever="<%= data['name'] %>">Купить</button>
+            </div>
         <% } %>
 
         <!-- Окно покупки -->

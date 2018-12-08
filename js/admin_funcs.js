@@ -30,11 +30,11 @@ xhr.onreadystatechange = () => {
                                <td>${el.number}</td>
                                <td>${el.img}</td>
                                <td>
-                                <a href="/admin/remove?${el._id}">
+                                <a href="/admin/remove/${el._id}">
                                     <img src="https://image.flaticon.com/icons/svg/148/148766.svg"
                                         width="23">
                                 </a>
-                                <a href="/admin/change?${el._id}" style="margin-left: 10px">
+                                <a href="/admin/change/${el._id}" style="margin-left: 10px">
                                     <img src="https://image.flaticon.com/icons/svg/1293/1293302.svg"
                                         width="23">
                                 </a>
