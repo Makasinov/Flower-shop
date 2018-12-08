@@ -41,3 +41,39 @@ function buy() {
         xhr.send();
     } else alert('Возникла ошибка!\nВозможно вы не заполнили некоторые поля');
 }
+
+$('#exampleModal').on('show.bs.modal', function (event) {
+    let button = $(event.relatedTarget); // Button that triggered the modal
+
+    let recipient = button.data('id');
+    let title = button.data('name');
+    let quantity = button.data('quantity');
+    let price = button.data('price');
+    
+    let modal = $(this);
+    // modal.find('.modal-title').text('Форма заказа');
+    modal.find('form').attr({
+        id: recipient
+    })
+    modal.find('#final_price').attr({
+        "data-price" : price
+    });
+    modal.find('#final_price').text('Конечная стоимость ' + price + 'р');
+    modal.find('.modal-body #recipient-name').val(title);
+    $("#quantity").attr({
+        "max": quantity,
+        "placeholder": "В наличии " + quantity
+    });
+    var final_price = 0;
+    var inputNumber = document.getElementById('quantity');
+    inputNumber.value = NaN;
+    inputNumber.oninput = () => {
+        // alert(inputNumber.value);
+      if (inputNumber.value > quantity) inputNumber.value = quantity;
+      final_price = inputNumber.value * price;
+      modal.find('#final_price').attr({
+        "data-price" : final_price
+    });
+      document.getElementById('final_price').innerHTML = 'Конечная стоимость ' + final_price + 'р';  
+    };
+});

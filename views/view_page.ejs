@@ -22,50 +22,55 @@
         </div>
         <br>
         <% if (data['number'] > 0) { %>
-            <button type="button" class="btn btn-primary btn-success" data-toggle="modal" data-target="#exampleModal" data-whatever="<%= data['name'] %>">Купить</button>
+            <button type="button" class="btn btn-primary btn-success" 
+            data-id="<%= data['_id'] %>" data-quantity="<%= data['number'] %>" data-name="<%= data['name'] %>" data-price="<%= data['price'] %>"
+            data-toggle="modal" data-target="#exampleModal" data-whatever="<%= data['name'] %>">Купить</button>
         <% } %>
 
+        <!-- Окно покупки -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true" style="text-align: left">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">форма заказа</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">Хочу приобрести</label>
-                                <input type="text" class="form-control" id="recipient-name" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label">Message:</label>
-                                <textarea class="form-control" id="message-text"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Send message</button>
-                    </div>
+        aria-hidden="true" style="text-align: left">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalLabel">Форма заказа</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form autocomplete="on" class="form">
+                        <div class="form-group">
+                            <label for="client_name" class="col-form-label">Меня зовут</label>
+                            <input type="text" class="form-control" id="client_name" required autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Я хочу приобрести</label>
+                            <input type="text" class="form-control" id="recipient-name" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity" class="col-form-label">В количестве (шт)</label>
+                            <input type="number" class="form-control" id="quantity" min="1" required>
+                        </div>
+                        <p id="final_price"></p>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Пусть со мной свяжутся по телефону</label>
+                            <input type="tel" class="form-control" required autocomplete="tel" id="mobile">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Хочу получить подтверждение на почту</label>
+                            <input type="email" class="form-control" required autocomplete="email" id="email">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" onclick="buy()">Заказать</button>
                 </div>
             </div>
         </div>
 
-        <script>
-            $('#exampleModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget) // Button that triggered the modal
-                var recipient = button.data('whatever') // Extract info from data-* attributes
-                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-                var modal = $(this)
-                modal.find('.modal-title').text('Форма заказа')
-                modal.find('.modal-body input').val(recipient)
-            })
-        </script>
+        <script src="/js/homepage.js"></script>
     </div>
 
 </body>
