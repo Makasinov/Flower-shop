@@ -1,3 +1,4 @@
+var mongo = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 var http = require('http');
@@ -32,54 +33,79 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 
-var sess;
+// var sess;
 
 app.get('*', function (req, res, next) {
-    sess = req.session;
+    // sess = req.session;
     // console.log(sess.email);
     next();
 });
 
+// ------------ <ADMIN> ------------ // 
+
 app.get('/admin/remove/:id', function (req, res) {
-    console.log('remove ', req.params.id);
-    sess = req.session;
+    // console.log('remove ', req.params.id);
+    var sess = req.session;
+
     if (sess != undefined && sess.email == 'admin') {
-        MongoClient.connect(url, function (err, db) {
+        var id = req.params.id;
+        MongoClient.connect(url, {
+            useNewUrlParser: true
+        }, function (err, db) {
             if (err) throw err;
             var dbo = db.db("myDB");
 
-            // dbo.collection("Store").insertOne(myObj, function (err, res) {
             dbo.collection('Store', function (err, collection) {
-                collection.deleteOne({
-                    _id: new require('mongodb').ObjectID(req.params.id)
+
+                collection.find({
+                    '_id': mongo.ObjectID(id)
+                }, {
+                    projection: {
+                        img: 1
+                    }
+                }).toArray((err, result) => {
+                    if (err) throw err;
+                    var img_path = result[0]['img'];
+                    fs.unlink('.\\' + img_path, (err) => {
+                        console.log(img_path, 'was deleted');
+                    });
                 });
-                if (err) throw err;
-                console.log("1 document deleted");
+
+
+                collection.deleteOne({
+                    _id: mongo.ObjectID(id)
+                });
+                if (err) console.log('document was\'t deleted!');
+
+
+                // console.log("1 document deleted");
                 res.redirect('/admin');
             });
         });
-    }
+    } else res.redirect('/admin');
 })
 
 app.post('/admin/fileupload', function (req, res) {
-    sess = req.session;
+    var sess = req.session;
+
     if (sess != undefined && sess.email == 'admin') {
         var form = new formidable.IncomingForm();
         form.parse(req, function (err, fields, files) {
             var myObj = {
                 name: fields['product_name'],
-                price: fields['product_price'],
-                number: fields['product_quantity'],
+                price: +fields['product_price'],
+                number: +fields['product_quantity'],
                 img: '/img/' + files.filetoupload.name
             }
 
-            MongoClient.connect(url, function (err, db) {
+
+            MongoClient.connect(url, {
+                useNewUrlParser: true
+            }, function (err, db) {
                 if (err) throw err;
                 var dbo = db.db("myDB");
-
                 dbo.collection("Store").insertOne(myObj, function (err, res) {
                     if (err) throw err;
-                    //   console.log("1 document inserted");
                     db.close();
                 });
             });
@@ -90,10 +116,11 @@ app.post('/admin/fileupload', function (req, res) {
                 if (err) throw err;
                 res.redirect('/admin');
             });
-
         });
-    }
+    } else res.redirect('/admin');
 })
+
+// ------------ </ ADMIN > ------------ //
 
 // app.get('/session', function (req, res) {
 //     sess = req.session;
@@ -102,7 +129,7 @@ app.post('/admin/fileupload', function (req, res) {
 // });
 
 app.get('/', async function (req, res) {
-    sess = req.session;
+    var sess = req.session;
     var products = await getProducts();
 
     res.render('home', {
@@ -111,7 +138,7 @@ app.get('/', async function (req, res) {
 });
 
 app.get('/product/:id', async function (req, res) {
-    sess = req.session;
+    var sess = req.session;
     let products = await getProducts();
     products = products.filter(item => item['_id'] == req.params.id);
     product = products[0];
@@ -122,7 +149,7 @@ app.get('/product/:id', async function (req, res) {
 });
 
 app.get('/login', function (req, res) {
-    sess = req.session;
+    var sess = req.session;
     // console.log(sess);
     if (sess != undefined && sess.email == 'admin')
         res.redirect('/admin');
@@ -131,7 +158,7 @@ app.get('/login', function (req, res) {
 });
 
 app.post('/login', function (req, res) {
-    sess = req.session;
+    var sess = req.session;
     if (sess.email == 'admin') res.redirect('/admin');
     sess.email = req.body.email;
     var passwd = req.body.pass;
@@ -145,7 +172,7 @@ app.post('/login', function (req, res) {
 });
 
 app.get('/admin/new', function (req, res) {
-    sess = req.session;
+    var sess = req.session;
     if (sess.email) {
         res.render('admin_product_new');
     } else {
@@ -154,7 +181,8 @@ app.get('/admin/new', function (req, res) {
 });
 
 app.get('/admin', function (req, res) {
-    sess = req.session;
+    var sess = req.session;
+    sess.email = 'admin' /// УДАЛИТЬ ПОТОМ
     res.writeHead(200, {
         "Content-Type": "text/html; charset=utf-8"
     });
@@ -185,17 +213,6 @@ app.get('/admin_exit', function (req, res) {
         res.redirect('/');
 
     });
-});
-
-app.get('/logout', function (req, res) {
-    req.session.destroy(function (err) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.redirect('/');
-        }
-    });
-
 });
 
 app.get('/start_page', (req, res) => {
