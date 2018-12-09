@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include head %>
+</head>
+
+<body>
+    <div class="alert alert-primary box" style="margin-top: 20px">
+        <form method="post" enctype="multipart/form-data" action="" onsubmit="return change_product()">
+            <label for="product_id">ID товара</label>
+            <input class="form-control" name="product_id" type="text" id="product_id" value="<%= data['_id'] %>" disabled>
+
+            <label for="product_name">Наименование товара</label>
+            <input class="form-control" name="product_name" type="text" id="product_name" value="<%= data['name'] %>">
+
+            <label for="product_price">Стоимость</label>
+            <input type="number" class="form-control" placeholder="в рублях" id="product_price" min="0" name="product_price" value="<%= data['price'] %>">
+
+            <label for="product_quantity">Количество</label>
+            <input type="number" class="form-control" id="product_quantity" min="0" name="product_quantity" value="<%= data['number'] %>">
+            <br>
+            <div class="input-group mb-3" style="width: 400px">
+                <div class="custom-file">
+                    <input type="text" value="<%= data['img'] %>" name="product_file" disabled>
+                    <input type="file" class="custom-file-input" name="filetoupload" id="inputGroupFile01"
+                        aria-describedby="inputGroupFileAddon01" oninput="changeName()">
+                    <label class="custom-file-label" for="inputGroupFile01" id="file_name"><%= data['img'] %></label>
+                </div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroupFileAddon01">Картинка продукта</span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Изменить</button>
+        </form>
+        <br>
+        <img src="<%= data['img'] %>" alt="Картинка" style="max-width: 100%">
+    </div>
+        <script>
+            function changeName() {
+                if (document.getElementById('inputGroupFile01').files.length > 0) {
+                    var product_img = document.getElementById('inputGroupFile01').files[0];
+                    document.getElementById('file_name').innerHTML = product_img.name;
+                    return product_img;
+                } else
+                    return NaN;
+            };
+
+            function change_product() {
+                var inputs = document.getElementsByTagName("input");
+                var product_name = inputs[0].value;
+                var product_price = inputs[1].value;
+                var product_quantity = inputs[2].value;
+                var product_img = changeName();
+
+                var file_name = document.getElementById('file_name').innerHTML;
+            
+
+                if (product_name != '' &&
+                    product_price != '' && 
+                    product_quantity != '' &&
+                    (product_img.name != undefined || file_name != '') &&
+                    (product_img.name.includes('.jpg') || product_img.name.includes('.png'))
+                    )
+                    return true;
+                else {
+                    alert('Ошибка');
+                    return false;
+                }
+
+            }
+        </script>
+</body>
+
+</html>

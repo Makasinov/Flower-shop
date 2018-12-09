@@ -41,7 +41,132 @@ app.get('*', function (req, res, next) {
     next();
 });
 
-// ------------ <ADMIN> ------------ // 
+// ------------ <ADMIN> ------------ //
+
+app.get('/admin/change/:id', function (req, res) {
+    var sess = req.session;
+
+    if (sess != undefined && sess.email == 'admin') {
+        var id = req.params.id;
+
+        MongoClient.connect(url, {
+            useNewUrlParser: true
+        }, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db("myDB");
+
+            dbo.collection('Store', function (err, collection) {
+
+                collection.find({
+                    '_id': mongo.ObjectID(id)
+                }, {
+                    projection: {
+                        name: 1,
+                        price: 1,
+                        number: 1,
+                        img: 1
+                    }
+                }).toArray((err, result) => {
+                    if (err) throw err;
+                    res.render('admin_product_change', {
+                        data: result[0]
+                    });
+                });
+            });
+        });
+    } else res.redirect('/admin');
+})
+
+app.post('/admin/change/:id', function (req, res) {
+    var sess = req.session;
+
+    if (sess != undefined && sess.email == 'admin') {
+        var form = new formidable.IncomingForm();
+        form.parse(req, function (err, fields, files) {
+            console.log(fields);
+            var file_name = files.filetoupload.name;
+
+            if (files.filetoupload.name != '') {
+                var myObj = {
+                    _id: req.params.id,
+                    name: fields['product_name'],
+                    price: +fields['product_price'],
+                    number: +fields['product_quantity'],
+                    img: '/img/' + files.filetoupload.name
+                }
+                console.log(myObj);
+
+                MongoClient.connect(url, {
+                    useNewUrlParser: true
+                }, function (err, db) {
+                    if (err) throw err;
+                    var dbo = db.db("myDB");
+
+                    dbo.collection('Store', function (err, collection) {
+
+                        collection.updateOne({
+                            '_id': mongo.ObjectID(myObj['_id'])
+                        }, {
+                            $set: {
+                                name: myObj['name'],
+                                price: +myObj['price'],
+                                number: +myObj['number'],
+                                img: '/img/' + files.filetoupload.name
+                            }
+                        }, {
+                            upsert: true
+                        });
+
+                        if (err) throw err;
+
+                        var oldpath = files.filetoupload.path;
+                        var newpath = './img/' + files.filetoupload.name;
+                        fs.rename(oldpath, newpath, function (err) {
+                            if (err) throw err;
+                        });
+
+                        console.log('success!');
+                    });
+                });
+            } else {
+                var myObj = {
+                    _id: req.params.id,
+                    name: fields['product_name'],
+                    price: +fields['product_price'],
+                    number: +fields['product_quantity']
+                }
+                console.log(myObj);
+
+                MongoClient.connect(url, {
+                    useNewUrlParser: true
+                }, function (err, db) {
+                    if (err) throw err;
+                    var dbo = db.db("myDB");
+
+                    dbo.collection('Store', function (err, collection) {
+
+                        collection.updateOne({
+                            '_id': mongo.ObjectID(myObj['_id'])
+                        }, {
+                            $set: {
+                                name: myObj['name'],
+                                price: +myObj['price'],
+                                number: +myObj['number']
+                            }
+                        }, {
+                            upsert: true
+                        });
+                        if (err) throw err;
+                        console.log('success!');
+                    });
+                });
+            }
+
+            res.redirect('/admin');
+        })
+    } else res.redirect('/admin')
+});
+
 
 app.get('/admin/remove/:id', function (req, res) {
     // console.log('remove ', req.params.id);
@@ -67,7 +192,7 @@ app.get('/admin/remove/:id', function (req, res) {
                     if (err) throw err;
                     var img_path = result[0]['img'];
                     fs.unlink('.\\' + img_path, (err) => {
-                        console.log(img_path, 'was deleted');
+                        // console.log(img_path, 'was deleted');
                     });
                 });
 

@@ -30,7 +30,7 @@ xhr.onreadystatechange = () => {
                                <td>${el.number}</td>
                                <td>${el.img}</td>
                                <td>
-                                <a href="/admin/remove/${el._id}">
+                                <a href="/admin/remove/${el._id}" onclick="return confirm('Уверены что хотите удалить?')">
                                     <img src="https://image.flaticon.com/icons/svg/148/148766.svg"
                                         width="23">
                                 </a>
