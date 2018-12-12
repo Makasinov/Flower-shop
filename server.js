@@ -245,6 +245,40 @@ app.post('/admin/fileupload', function (req, res) {
     } else res.redirect('/admin');
 })
 
+app.get('/admin/orders', function (req, res) {
+    var sess = req.session;
+
+    if (sess != undefined && sess.email == 'admin') {
+        var client = new MongoClient(url, {
+            useNewUrlParser: true
+        });
+        client.connect(function (err) {
+            assert.equal(null, err);
+            //console.log("Connected successfully to server");
+
+            const db = client.db('myDB');
+            db.collection('Orders').find({}, {
+                projection: {
+                    product: 1,
+                    customer: 1,
+                    processed: 1,
+                    final_price: 1
+                }
+            }).toArray(
+                (err, result) => {
+                    if (err) throw err;
+                    // console.log(result);
+
+                    res.render('admin_orders', {
+                        data: result
+                    });
+                });
+
+            client.close();
+        });
+    } else res.redirect('/admin');
+});
+
 // ------------ </ ADMIN > ------------ //
 
 // app.get('/session', function (req, res) {
@@ -261,6 +295,7 @@ app.get('/', async function (req, res) {
         data: products
     });
 });
+
 
 app.get('/product/:id', async function (req, res) {
     var sess = req.session;
@@ -307,12 +342,13 @@ app.get('/admin/new', function (req, res) {
 
 app.get('/admin', function (req, res) {
     var sess = req.session;
-    sess.email = 'admin' /// УДАЛИТЬ ПОТОМ
+    // sess.email = 'admin' /// УДАЛИТЬ ПОТОМ
     res.writeHead(200, {
         "Content-Type": "text/html; charset=utf-8"
     });
     if (sess.email) {
         res.write('<h1>Hello ' + sess.email + '</h1>' +
+            '<a href="/admin/orders">Заказы</a><h1></h1>' +
             // '<h3 id="delete_me_after">I\'m loading....</h3>' +
             // '<link rel="stylesheet" href="css/style.css">' +
             '<div id="delete_me_after">' +
