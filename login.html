@@ -12,7 +12,7 @@
                 /*
                 * Perform some validation here.
                 */
-                $.post("http://localhost:3000/login", { 
+                $.post("/login", { 
                     email: email, pass: pass }, (data) => {
                     if (data === 'done') {
                         window.location.href = "/admin";
@@ -29,7 +29,7 @@
 <body style="margin: 10px">
     <input type="text" size="40" placeholder="Type your email" id="email"><br /> <br>
     <input type="password" size="40" placeholder="Type your password" id="password"><br /><br>
-    <input type="button" value="Submit" id="submit"> <br /><br>
+    <input type="button" value="Submit" id="submit"> <br><br>
     <a href="/">Вернуться</a>
 </body>
 

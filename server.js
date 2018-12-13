@@ -1,11 +1,10 @@
 var mongo = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
-var http = require('http');
+const http = require('http');
 var formidable = require('formidable');
 var fs = require('fs');
 
-var http = require('http');
 var formidable = require('formidable');
 
 // Connection URL
@@ -42,6 +41,42 @@ app.get('*', function (req, res, next) {
 });
 
 // ------------ <ADMIN> ------------ //
+
+app.get('/admin', function (req, res) {
+    var sess = req.session;
+    // sess.email = 'admin' /// УДАЛИТЬ ПОТОМ
+    res.writeHead(200, {
+        "Content-Type": "text/html; charset=utf-8"
+    });
+    if (sess.email) {
+        res.write('<h1>Hello ' + sess.email + '</h1>' +
+            '<a href="/admin/orders">Заказы</a><h1></h1>' +
+            // '<h3 id="delete_me_after">I\'m loading....</h3>' +
+            // '<link rel="stylesheet" href="css/style.css">' +
+            '<div id="delete_me_after">' +
+            '<span class="cssload-loader"><span class="cssload-loader-inner"></span></span>' +
+            '</div>' +
+            '<div id="main_container"></div>' +
+            '<link rel="stylesheet" href="css/loading_icon.css">' +
+            '<script src="js/admin_funcs.js" async></script>');
+        res.end('<br><a href="/admin_exit">Выйти</a><br>' +
+            '<a href="/">Домой</a>');
+    } else {
+        res.write('<h1>Please login first.</h1>' +
+            '<a href="/">Домой</a><br>');
+        res.end('<a href="/login">Войти</a>');
+    }
+});
+
+app.get('/admin_exit', function (req, res) {
+    req.session.destroy((err) => {
+        if (err) {
+            console.log(err);
+        }
+        res.redirect('/');
+
+    });
+});
 
 app.get('/admin/change/:id', function (req, res) {
     var sess = req.session;
@@ -167,6 +202,14 @@ app.post('/admin/change/:id', function (req, res) {
     } else res.redirect('/admin')
 });
 
+app.get('/admin/new', function (req, res) {
+    var sess = req.session;
+    if (sess.email) {
+        res.render('admin_product_new');
+    } else {
+        res.redirect('/login');
+    }
+});
 
 app.get('/admin/remove/:id', function (req, res) {
     // console.log('remove ', req.params.id);
@@ -223,7 +266,6 @@ app.post('/admin/fileupload', function (req, res) {
                 img: '/img/' + files.filetoupload.name
             }
 
-
             MongoClient.connect(url, {
                 useNewUrlParser: true
             }, function (err, db) {
@@ -279,7 +321,39 @@ app.get('/admin/orders', function (req, res) {
     } else res.redirect('/admin');
 });
 
+app.get('/admin/orders/:id', function (req, res) {
+    var sess = req.session;
+    if (sess != undefined && sess.email == 'admin') {
+        let id = req.params.id;
+
+        MongoClient.connect(url, {
+            useNewUrlParser: true
+        }, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db("myDB");
+            
+            dbo.collection('Orders', function (err, collection) {
+                collection.updateOne({
+                    '_id': mongo.ObjectID(id)
+                }, {
+                    $set: {
+                        processed: true
+                    }
+                }, {
+                    upsert: true
+                });
+                if (err) throw err;
+                res.redirect('/admin/orders');
+            });
+        });
+    } else res.redirect('/admin');
+})
+
 // ------------ </ ADMIN > ------------ //
+
+
+
+
 
 // app.get('/session', function (req, res) {
 //     sess = req.session;
@@ -295,7 +369,6 @@ app.get('/', async function (req, res) {
         data: products
     });
 });
-
 
 app.get('/product/:id', async function (req, res) {
     var sess = req.session;
@@ -329,51 +402,6 @@ app.post('/login', function (req, res) {
         res.send('error');
         res.end('error');
     }
-});
-
-app.get('/admin/new', function (req, res) {
-    var sess = req.session;
-    if (sess.email) {
-        res.render('admin_product_new');
-    } else {
-        res.redirect('/login');
-    }
-});
-
-app.get('/admin', function (req, res) {
-    var sess = req.session;
-    // sess.email = 'admin' /// УДАЛИТЬ ПОТОМ
-    res.writeHead(200, {
-        "Content-Type": "text/html; charset=utf-8"
-    });
-    if (sess.email) {
-        res.write('<h1>Hello ' + sess.email + '</h1>' +
-            '<a href="/admin/orders">Заказы</a><h1></h1>' +
-            // '<h3 id="delete_me_after">I\'m loading....</h3>' +
-            // '<link rel="stylesheet" href="css/style.css">' +
-            '<div id="delete_me_after">' +
-            '<span class="cssload-loader"><span class="cssload-loader-inner"></span></span>' +
-            '</div>' +
-            '<div id="main_container"></div>' +
-            '<link rel="stylesheet" href="css/loading_icon.css">' +
-            '<script src="js/admin_funcs.js" async></script>');
-        res.end('<br><a href="/admin_exit">Выйти</a><br>' +
-            '<a href="/">Домой</a>');
-    } else {
-        res.write('<h1>Please login first.</h1>' +
-            '<a href="/">Домой</a><br>');
-        res.end('<a href="/login">Войти</a>');
-    }
-});
-
-app.get('/admin_exit', function (req, res) {
-    req.session.destroy((err) => {
-        if (err) {
-            console.log(err);
-        }
-        res.redirect('/');
-
-    });
 });
 
 app.get('/start_page', (req, res) => {
@@ -418,7 +446,7 @@ app.get('/buy*', (req, res) => {
     str = str.split('&');
     for (var i = 0; i < str.length; i++)
         str[i] = str[i].substr(str[i].indexOf('=') + 1, str[i].length);
-    // console.log(str);
+    console.log(str);
 
     bodyText = `<h1>Здравствуйте ${str[3]}!</h1><br>
         Вы заказывали на нашем сайте <strong>${str[1]}</strong> в количестве ${str[2]} шт<br>
@@ -450,6 +478,32 @@ app.get('/buy*', (req, res) => {
                 console.log(error);
                 return;
             }
+
+            var myObj = {
+                product: {
+                    id: str[0],
+                    quantity: str[2]
+                },
+                customer: {
+                    name: str[3],
+                    mobile: str[4],
+                    email: str[5]
+                },
+                processed: false,
+                final_price: str[6]
+            }
+
+            MongoClient.connect(url, {
+                useNewUrlParser: true
+            }, function (err, db) {
+                if (err) throw err;
+                var dbo = db.db("myDB");
+                dbo.collection("Orders").insertOne(myObj, function (err, res) {
+                    if (err) throw err;
+                    db.close();
+                });
+            });
+
             // console.log('Message sent: %s', info.messageId);
         });
     });
@@ -541,8 +595,10 @@ app.use((req, res, next) => {
     res.status(404).send('Sorry cant find that!');
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = 80;
 
-app.listen(PORT, () => {
-    // console.log(`Server running on port ${PORT}...`);
-})
+var httpServer = http.createServer(app);
+
+httpServer.listen(PORT, () => {
+    console.log(`Listening ${['PORT']} port`, PORT);
+});

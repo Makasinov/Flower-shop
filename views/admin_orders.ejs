@@ -6,14 +6,17 @@
 </head>
 
 <body>
+    <div class="btn">
+        <a href="/admin">Назад</a>
+    </div>
     <div class="alert">
-
+        <% if (data.length == 0) { %>
+        <h1>Нет заказов :(</h1>
+        <h6>(Кажется мы банкроты)</h6>
+        <% } %>
         <% for(let i = 0; i < data.length; i++) { %>
-        <% if ( data[i]['processed'] ) { %>
-        <div class="alert alert-secondary" role="alert">
-        <% } else { %>
+        <% if ( !data[i]['processed'] ) { %>
         <div class="alert alert-primary" role="alert">
-            <% } %>
             <table class="table">
                 <tbody>
                     <tr>
@@ -24,8 +27,9 @@
                         <td>
                             <%= data[i]['final_price'] %>р
                         </td>
-                        <td><a href="/product/<%= data[i]['product']['id'] %>">
-                                ID <%= data[i]['product']['id'] %>
+                        <td><a href="/product/<%= data[i]['product']['id'] %>" target="_blank">
+                                ID
+                                <%= data[i]['product']['id'] %>
                             </a>
                         </td>
                     </tr>
@@ -35,15 +39,67 @@
                             <%= data[i]['customer']['name'] %>
                         </td>
                         <td>
-                            <%= data[i]['customer']['mobile'] %>
+                            <a href="tel:<%= data[i]['customer']['mobile'] %>">
+                                <%= data[i]['customer']['mobile'] %>
+                            </a>
                         </td>
                         <td>
-                            <%= data[i]['customer']['email'] %>
+                            <a href="mailto:<%= data[i]['customer']['email'] %>">
+                                    <%= data[i]['customer']['email'] %>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="btn">
+                                <a href="/admin/orders/<%= data[i]['_id'] %>">
+                                Завершить заказ
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <% } %>
+        <% } %>
+        <% for(let i = 0; i < data.length; i++) { %>
+        <% if ( data[i]['processed'] ) { %>
+        <div class="alert alert-secondary" role="alert">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th scope="row">Товар</th>
+                        <td>
+                            <%= data[i]['product']['quantity'] %> шт
+                        </td>
+                        <td>
+                            <%= data[i]['final_price'] %>р
+                        </td>
+                        <td><a href="/product/<%= data[i]['product']['id'] %>" target="_blank">
+                                ID
+                                <%= data[i]['product']['id'] %>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Покупатель</th>
+                        <td>
+                            <%= data[i]['customer']['name'] %>
+                        </td>
+                        <td>
+                            <a href="tel:<%= data[i]['customer']['mobile'] %>">
+                                <%= data[i]['customer']['mobile'] %>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="mailto:<%= data[i]['customer']['email'] %>">
+                                <%= data[i]['customer']['email'] %>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
         <% } %>
     </div>
 </body>
