@@ -331,8 +331,9 @@ app.get('/admin/orders/:id', function (req, res) {
         }, function (err, db) {
             if (err) throw err;
             var dbo = db.db("myDB");
-            
+
             dbo.collection('Orders', function (err, collection) {
+
                 collection.updateOne({
                     '_id': mongo.ObjectID(id)
                 }, {
@@ -342,7 +343,45 @@ app.get('/admin/orders/:id', function (req, res) {
                 }, {
                     upsert: true
                 });
+
                 if (err) throw err;
+                collection.find({
+                    '_id': mongo.ObjectID(id)
+                }, {
+                    projection: {
+                        product: 1
+                    }
+                }).toArray((err, result) => {
+                    if (err) throw err;
+
+                    var product_id = result[0]['product']['id'];
+                    var new_price = +result[0]['product']['quantity'];
+
+                    dbo.collection('Store', function (err, store) {
+                        
+                        store.find({
+                            '_id': mongo.ObjectID(product_id)
+                        }, {
+                            projection: {
+                                number: 1
+                            }
+                        }).toArray((err, res) => {
+                            
+                            new_price = res[0]['number'] - new_price;
+                            
+                            store.updateOne({
+                                '_id': mongo.ObjectID(product_id)
+                            },{
+                                $set: {
+                                    'number': new_price
+                                }
+                            })
+                        });
+
+                    });
+
+                });
+
                 res.redirect('/admin/orders');
             });
         });
