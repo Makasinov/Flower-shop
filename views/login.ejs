@@ -1,8 +1,16 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-    <title>Session Management in NodeJS using Express4.2</title>
+    <% include head %>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+
+<body style="margin: 10px">
+    <input type="text" size="40" placeholder="Type your email" id="email"><br /> <br>
+    <input type="password" size="40" placeholder="Type your password" id="password"><br /><br>
+    <input type="button" value="Submit" id="submit"> <br><br>
+    <a href="/">Вернуться</a>
     <script>
         $(document).ready(function () {
             var email, pass;
@@ -24,13 +32,6 @@
             });
         });
     </script>
-</head>
-
-<body style="margin: 10px">
-    <input type="text" size="40" placeholder="Type your email" id="email"><br /> <br>
-    <input type="password" size="40" placeholder="Type your password" id="password"><br /><br>
-    <input type="button" value="Submit" id="submit"> <br><br>
-    <a href="/">Вернуться</a>
 </body>
 
 </html>

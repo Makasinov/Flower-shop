@@ -12,8 +12,8 @@ xhr.onreadystatechange = () => {
     bodyHTML = `
     <a href="/admin/new">
         <img src="https://image.flaticon.com/icons/svg/148/148764.svg" width="30">
-    </a><br>
-<table border="1" width="60%" cellpadding="5">
+    </a><br><br>
+<table border="1" cellpadding="5">
    <tr>
     <th>_id</th>
     <th>name</th>

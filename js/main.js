@@ -102,6 +102,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const el = buttons[i];
         const str = `window.location= 'http://${location.host}/product/${el.id}'`
         el.setAttribute("onclick",str);
-        console.log(el.onClick);
+        // console.log(el.onClick);
     }
 });

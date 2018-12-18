@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <% include head %>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Hello
+            <%= email %>
+        </h1>
+        <a class="btn btn-primary" href="/admin/orders">Заказы</a>
+        <a class="btn btn-primary" href="/admin_exit">Выйти</a>
+        <a class="btn btn-primary" href="/">Домой</a>
+    </div>
+    <h3 id="delete_me_after">Loading....</h3>
+    <link rel="stylesheet" href="css/style.css">
+    <div id="main_container"></div>
+    <script src="/js/admin_funcs.js" async></script>
+</body>
+
+</html>

@@ -45,23 +45,14 @@ app.get('*', function (req, res, next) {
 app.get('/admin', function (req, res) {
     var sess = req.session;
     // sess.email = 'admin' /// УДАЛИТЬ ПОТОМ
-    res.writeHead(200, {
-        "Content-Type": "text/html; charset=utf-8"
-    });
     if (sess.email) {
-        res.write('<h1>Hello ' + sess.email + '</h1>' +
-            '<a href="/admin/orders">Заказы</a><h1></h1>' +
-            // '<h3 id="delete_me_after">I\'m loading....</h3>' +
-            // '<link rel="stylesheet" href="css/style.css">' +
-            '<div id="delete_me_after">' +
-            '<span class="cssload-loader"><span class="cssload-loader-inner"></span></span>' +
-            '</div>' +
-            '<div id="main_container"></div>' +
-            '<link rel="stylesheet" href="css/loading_icon.css">' +
-            '<script src="js/admin_funcs.js" async></script>');
-        res.end('<br><a href="/admin_exit">Выйти</a><br>' +
-            '<a href="/">Домой</a>');
+        res.render('admin', {
+            email: sess.email
+        });
     } else {
+        res.writeHead(200, {
+            "Content-Type": "text/html; charset=utf-8"
+        });
         res.write('<h1>Please login first.</h1>' +
             '<a href="/">Домой</a><br>');
         res.end('<a href="/login">Войти</a>');
@@ -358,7 +349,7 @@ app.get('/admin/orders/:id', function (req, res) {
                     var new_price = +result[0]['product']['quantity'];
 
                     dbo.collection('Store', function (err, store) {
-                        
+
                         store.find({
                             '_id': mongo.ObjectID(product_id)
                         }, {
@@ -366,12 +357,12 @@ app.get('/admin/orders/:id', function (req, res) {
                                 number: 1
                             }
                         }).toArray((err, res) => {
-                            
+
                             new_price = res[0]['number'] - new_price;
-                            
+
                             store.updateOne({
                                 '_id': mongo.ObjectID(product_id)
-                            },{
+                            }, {
                                 $set: {
                                     'number': new_price
                                 }
@@ -422,11 +413,11 @@ app.get('/product/:id', async function (req, res) {
 
 app.get('/login', function (req, res) {
     var sess = req.session;
-    // console.log(sess);
+    // console.log('/login');
     if (sess != undefined && sess.email == 'admin')
         res.redirect('/admin');
     else
-        res.redirect('/login.html');
+        res.render('login');
 });
 
 app.post('/login', function (req, res) {
