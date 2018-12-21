@@ -2,6 +2,8 @@ var mongo = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 const http = require('http');
+// const http2 = require('http2');
+const https = require('https');
 var formidable = require('formidable');
 var fs = require('fs');
 
@@ -31,14 +33,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+app.enable("trust proxy");
 
-// var sess;
-
-app.get('*', function (req, res, next) {
-    // sess = req.session;
-    // console.log(sess.email);
-    next();
-});
 
 // ------------ <ADMIN> ------------ //
 
@@ -230,7 +226,6 @@ app.get('/admin/remove/:id', function (req, res) {
                     });
                 });
 
-
                 collection.deleteOne({
                     _id: mongo.ObjectID(id)
                 });
@@ -382,15 +377,6 @@ app.get('/admin/orders/:id', function (req, res) {
 // ------------ </ ADMIN > ------------ //
 
 
-
-
-
-// app.get('/session', function (req, res) {
-//     sess = req.session;
-//     res.send(sess.email);
-//     res.end();
-// });
-
 app.get('/', async function (req, res) {
     var sess = req.session;
     var products = await getProducts();
@@ -399,6 +385,7 @@ app.get('/', async function (req, res) {
         data: products
     });
 });
+
 
 app.get('/product/:id', async function (req, res) {
     var sess = req.session;
@@ -464,7 +451,7 @@ app.get('/start_page', (req, res) => {
     });
 });
 
-// ----------------------------------------------------------------------- //
+// ---------------------------------------------------------------- //
 
 
 const buy_url = '/buy?';
@@ -621,14 +608,27 @@ function getProducts() {
 
 // * --------------------------------------------------- * //
 
-app.use((req, res, next) => {
-    res.status(404).send('Sorry cant find that!');
-});
 
 const PORT = 80;
 
-var httpServer = http.createServer(app);
+var options = {
+    key: fs.readFileSync(__dirname + '\\localhost.key'),
+    cert: fs.readFileSync(__dirname + '\\localhost.crt'),
+    requestCert: false,
+    rejectUnauthorized: false
+};
 
-httpServer.listen(PORT, () => {
-    console.log(`Listening ${['PORT']} port`, PORT);
+const httpsServer = https.createServer(options, app);
+
+httpsServer.listen(443, () => {
+    console.log('HTTPS running at ' + 443);
+})
+
+http.createServer(function (request, response) {
+    response.writeHead(302, {
+        Location: "https://" + request.headers.host
+    })
+    response.end();
+}).listen(80, () => {
+    console.log('HTTP running at ' + 80);
 });
