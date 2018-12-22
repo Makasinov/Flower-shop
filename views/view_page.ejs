@@ -7,73 +7,77 @@
 
 <body>
     <% include header %>
-    <div class="alert box" role="alert">
-        <div class="alert alert-secondary center" role="alert">
-            <h2>
-                <%= data['name'] %>
-            </h2>
-        </div>
-        <div class="content_img" style="text-align: center">
-            <img alt="Картинка" src="<%= data['img'] %>" style="object-fit:cover; width: 320px" >
-            <h3>В наличии
-                <%= data['number'] %> штук</h3>
-            <h4>Цена за 1 шт - <strong>
-                    <%= data['price'] %>р</strong></h4>
-        </div>
-        <br>
-        <% if (data['number'] > 0) { %>
-            <div style="text-align: center">
-                <button type="button" class="btn btn-primary btn-success"  
-                data-id="<%= data['_id'] %>" data-quantity="<%= data['number'] %>" data-name="<%= data['name'] %>" data-price="<%= data['price'] %>"
-                data-toggle="modal" data-target="#exampleModal" data-whatever="<%= data['name'] %>">Купить</button>
+
+    <div class="album py-5 bg-light alert" role="alert" id="view_container">
+        <div class="container alert alert-light">
+            <div class="alert alert-secondary center" role="alert">
+                <h2>
+                    <%= data['name'] %>
+                </h2>
             </div>
-        <% } %>
+            <div class="content_img" style="text-align: center">
+                <img alt="Картинка" src="<%= data['img'] %>" style="object-fit:cover; width: 300px; border-radius: 25px">
+                <hr>
+                <h3>В наличии
+                    <%= data['number'] %> штук</h3>
+                <h4>Цена за 1 шт - <strong>
+                        <%= data['price'] %>р</strong></h4>
+            </div>
+            <br>
+            <% if (data['number'] > 0) { %>
+            <div style="text-align: center">
+                <button type="button" class="box btn btn-primary btn-success" data-id="<%= data['_id'] %>" data-quantity="<%= data['number'] %>"
+                    data-name="<%= data['name'] %>" data-price="<%= data['price'] %>" data-toggle="modal" data-target="#exampleModal"
+                    data-whatever="<%= data['name'] %>">Купить</button>
+            </div>
+            <% } %>
+        </div>
 
         <!-- Окно покупки -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true" style="text-align: left">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title" id="exampleModalLabel">Форма заказа</h2>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form autocomplete="on" class="form">
-                        <div class="form-group">
-                            <label for="client_name" class="col-form-label">Меня зовут</label>
-                            <input type="text" class="form-control" id="client_name" required autocomplete="name">
-                        </div>
-                        <div class="form-group">
-                            <label for="recipient-name" class="col-form-label">Я хочу приобрести</label>
-                            <input type="text" class="form-control" id="recipient-name" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="quantity" class="col-form-label">В количестве (шт)</label>
-                            <input type="number" class="form-control" id="quantity" min="1" required>
-                        </div>
-                        <p id="final_price"></p>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label">Пусть со мной свяжутся по телефону</label>
-                            <input type="tel" class="form-control" required autocomplete="tel" id="mobile">
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label">Хочу получить подтверждение на почту</label>
-                            <input type="email" class="form-control" required autocomplete="email" id="email">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" onclick="buy()">Заказать</button>
+            aria-hidden="true" style="text-align: left">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="exampleModalLabel">Форма заказа</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form autocomplete="on" class="form">
+                            <div class="form-group">
+                                <label for="client_name" class="col-form-label">Меня зовут</label>
+                                <input type="text" class="form-control" id="client_name" required autocomplete="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Я хочу приобрести</label>
+                                <input type="text" class="form-control" id="recipient-name" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity" class="col-form-label">В количестве (шт)</label>
+                                <input type="number" class="form-control" id="quantity" min="1" required>
+                            </div>
+                            <p id="final_price"></p>
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label">Пусть со мной свяжутся по телефону</label>
+                                <input type="tel" class="form-control" required autocomplete="tel" id="mobile">
+                            </div>
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label">Хочу получить подтверждение на почту</label>
+                                <input type="email" class="form-control" required autocomplete="email" id="email">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary" onclick="buy()">Заказать</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <script src="/js/homepage.js"></script>
-    </div>
+            <script src="/js/homepage.js"></script>
+        </div>
 
 </body>
 

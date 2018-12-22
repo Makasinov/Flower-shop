@@ -21,6 +21,7 @@ const nodemailer = require('nodemailer');
 const mailer = 'patrikmaximov749@gmail.com';
 const mailerPass = 'hunter749';
 
+
 app.use(express.static(__dirname));
 
 app.set('views', __dirname + '/views');
@@ -608,7 +609,6 @@ function getProducts() {
 
 // * --------------------------------------------------- * //
 
-
 const PORT = 80;
 
 var options = {
@@ -618,17 +618,14 @@ var options = {
     rejectUnauthorized: false
 };
 
+
+const httpServer = http.createServer(app);
 const httpsServer = https.createServer(options, app);
 
 httpsServer.listen(443, () => {
     console.log('HTTPS running at ' + 443);
 })
 
-http.createServer(function (request, response) {
-    response.writeHead(302, {
-        Location: "https://" + request.headers.host
-    })
-    response.end();
-}).listen(80, () => {
+httpServer.listen(80, () => {
     console.log('HTTP running at ' + 80);
 });

@@ -2,3 +2,38 @@
     margin: 0 auto;
     width: 90%;
 }
+
+.album {
+    background: -webkit-linear-gradient(240deg, rgba(255, 255, 255, 0.7), rgba(72, 15, 144, 0.4) 100%);
+    background: -webkit-gradient(linear, 240deg, from(rgba(255, 255, 255, 0.7), rgba(72, 15, 144, 0.4) 100%));
+    background: linear-gradient(to 240deg, rgba(255, 255, 255, 0.7), rgba(72, 15, 144, 0.4) 100%);
+}
+
+.blur {
+    filter: blur(10px)
+}
+
+html {
+    min-height: 100%;
+    /* make sure it is at least as tall as the viewport */
+}
+
+#cloud-container {
+    /* position: absolute; */
+    top: 65px;
+    /* bottom:0; */
+    left: 0;
+    right: 0;
+    /* overflow: hidden;
+    z-index: -1; */
+}
+
+#view_container {
+    position: absolute;
+    top: 65px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* overflow: hidden; */
+    z-index: -1;
+}
